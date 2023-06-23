@@ -1,0 +1,11 @@
+build/
+main/certs/
+**/.DS_Store
+esp_ds_data/
+managed_components/
+components/
+src/backend/.env
+src/backend/node_modules
+src/frontend/dam/node_modules
+db/aws/*/node_modules
+esp_secure_cert_data/*

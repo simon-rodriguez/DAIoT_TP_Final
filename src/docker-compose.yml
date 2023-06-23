@@ -1,0 +1,19 @@
+version: '0.1'
+
+services:
+
+    ionic-ui:
+      build:
+        context:                ./frontend/dam
+        dockerfile:             Dockerfile
+      ports:
+        -                       "8100:8100"
+      container_name:           ionic-ui
+      volumes:
+         -                      ./frontend/dam:/frontend/dam
+         -                      /frontend/dam/node_modules
+      command:                  ionic serve --external
+
+networks:
+    app-fullstack-net:
+        driver:                  bridge

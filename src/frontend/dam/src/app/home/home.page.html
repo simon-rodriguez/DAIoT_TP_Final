@@ -1,0 +1,38 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Home - Lista de Dispositivos
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button appColorBoton (click)="getUpdatedDevices()">Refrescar Lista de Dispositivos</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Lista de Dispositivos</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div id="contenido">
+    <ion-card *ngFor="let dispositivo of dispositivos">
+      <ion-card-header>
+        <ion-toolbar>
+          <ion-title>{{ dispositivo.thing.name }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button appColorBoton routerLink="/dispositivo/{{dispositivo.thing.thingid}}">Ver detalles</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-card-header>
+      <ion-card-content>
+        <p>ID del dispositivo: {{ dispositivo.thing.thingid }}</p>
+        <p>Modelo: {{ dispositivo.thing.model }}</p>
+        <p>Tipo: {{ dispositivo.thing.type }}</p>
+        <p>Sensor: {{ dispositivo.sensors.sensorid }}</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+</ion-content>

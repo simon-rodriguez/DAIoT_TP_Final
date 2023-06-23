@@ -1,0 +1,313 @@
+menu "Featured FreeRTOS IoT Integration"
+    config APP_WIFI_PROV_SHOW_QR
+        bool "Show provisioning QR code"
+        default y
+        help
+            Show the QR code for provisioning.
+
+    choice APP_WIFI_PROV_TRANSPORT
+        bool "Provisioning Transport method"
+        default APP_WIFI_PROV_TRANSPORT_BLE
+        help
+            Wi-Fi provisioning component offers both, SoftAP and BLE transports. Choose any one.
+    config APP_WIFI_PROV_TRANSPORT_SOFTAP
+        bool "Soft AP"
+    config APP_WIFI_PROV_TRANSPORT_BLE
+        bool "BLE"
+        select BT_ENABLED
+    endchoice
+
+    config APP_WIFI_PROV_TRANSPORT
+        int
+        default 1 if APP_WIFI_PROV_TRANSPORT_SOFTAP
+        default 2 if APP_WIFI_PROV_TRANSPORT_BLE
+
+    config GRI_RUN_QUALIFICATION_TEST
+        bool "Run qualification test."
+        default n
+        help
+            Enable to run qualification test. Use configurations in test_execution_config.h and test_param_config.h.
+            Disable to demo. Use configurations below (in sdkconfig).
+
+    menu "Qualification Test Configurations"
+
+        menu "Qualification Execution Test Configurations"
+            config GRI_DEVICE_ADVISOR_TEST_ENABLED
+                bool "Device Advisor Test."
+                default n
+
+            config GRI_MQTT_TEST_ENABLED
+                bool "MQTT Test."
+                default n
+
+            config GRI_TRANSPORT_INTERFACE_TEST_ENABLED
+                bool "Transport Interface Test."
+                default n
+
+            config GRI_OTA_PAL_TEST_ENABLED
+                bool "OTA PAL Test."
+                default n
+
+            config GRI_OTA_E2E_TEST_ENABLED
+                bool "OTA end-to-end Test."
+                default n
+
+            config GRI_CORE_PKCS11_TEST_ENABLED
+                bool "CorePKCS#11 Test."
+                default n
+
+        endmenu # "Qualification Execution Test Configurations"
+
+        menu "Qualification Parameter Configurations"
+            config GRI_QUALIFICATION_FORCE_GENERATE_NEW_KEY_PAIR
+                bool "Generate a key pair."
+                default n
+            
+            config GRI_QUALIFICATION_MQTT_ENDPOINT
+                string "Endpoint for MQTT Broker to use"
+                default "PLACE_HOLDER"
+                help
+                    MQTT Broker for Device Advisor Test/MQTT Test/OTA end-to-end Test.
+
+            config GRI_QUALIFICATION_MQTT_PORT
+                int "Port for MQTT Broker to use"
+                default 8883
+            
+            config GRI_QUALIFICATION_CLIENT_IDENTIFIER
+                string "Client Identifier for MQTT Test"
+                default "PLACE_HOLDER"
+            
+            config GRI_QUALIFICATION_NETWORK_BUFFER_SIZE
+                int "Network Buffer Size for MQTT Test"
+                default 5000
+            
+            config GRI_QUALIFICATION_PROCESS_LOOP_TIMEOUT_MS
+                int "Timeout to run MQTT process loop for MQTT Test"
+                default 700
+            
+            config GRI_QUALIFICATION_ECHO_SERVER
+                string "Echo Server Domain Name/IP for Transport Interface Test"
+                default "PLACE_HOLDER"
+                help
+                    Domain Name or IP address for Transport Interface Test.
+
+            config GRI_QUALIFICATION_ECHO_SERVER_PORT
+                int "Port for Echo Server to use"
+                default 9000
+            
+            config GRI_QUALIFICATION_OTA_PAL_CERTIFICATE_FILE
+                string "Path to cert for OTA PAL Test."
+                default ""
+            
+            config GRI_QUALIFICATION_OTA_PAL_FIRMWARE_FILE
+                string "Path to store firmware for OTA PAL Test."
+                default "/"
+            
+            config GRI_QUALIFICATION_OTA_PAL_USE_FILE_SYSTEM
+                bool "Use File System for OTA PAL Test."
+                default n
+            
+            config GRI_QUALIFICATION_THING_NAME
+                string "Thing Name for Device Advisor Test/OTA end-to-end Test"
+                default "PLACE_HOLDER"
+            
+            config GRI_QUALIFICATION_OTA_APP_VERSION_MAJOR
+                int "Application version major for OTA end-to-end Test."
+                default 0
+            
+            config GRI_QUALIFICATION_OTA_APP_VERSION_MINOR
+                int "Application version minor for OTA end-to-end Test."
+                default 9
+            
+            config GRI_QUALIFICATION_OTA_APP_VERSION_BUILD
+                int "Application version build for OTA end-to-end Test."
+                default 0
+        endmenu # "Qualification Parameter Configurations"
+        
+    endmenu # Qualification Test Configurations
+
+
+    config GRI_MQTT_ENDPOINT
+        string "Endpoint for MQTT Broker to use"
+        depends on !GRI_RUN_QUALIFICATION_TEST
+        default ""
+
+    config GRI_MQTT_PORT
+        int "Port for MQTT Broker to use"
+        depends on !GRI_RUN_QUALIFICATION_TEST
+        default 8883
+
+    config GRI_THING_NAME
+        string "Thing name"
+        depends on !GRI_RUN_QUALIFICATION_TEST
+        default "DISP01"
+
+    config GRI_OUTPUT_CERTS_KEYS
+        bool "Output provisioned certificates and keys."
+        default y
+
+    menu "coreMQTT-Agent Manager Configurations"
+
+        config GRI_MQTT_AGENT_TASK_STACK_SIZE
+            int "coreMQTT-Agent task stack size"
+            default 4096
+
+        config GRI_MQTT_AGENT_TASK_PRIORITY
+            int "coreMQTT-Agent task priority"
+            default 4
+
+        config GRI_CONNECTION_TASK_STACK_SIZE
+            int "Connection handling task stack size"
+            default 3072
+
+        config GRI_CONNECTION_TASK_PRIORITY
+            int "Connection handling task priority"
+            default 4
+
+        config GRI_RETRY_MAX_BACKOFF_DELAY_MS
+            int "Maximum backoff delay on connection retry in milliseconds"
+            default 5000
+
+        config GRI_RETRY_BACKOFF_BASE_MS
+            int "Base back-off delay on connection retry in milliseconds"
+            default 500
+
+        config GRI_MQTT_AGENT_NETWORK_BUFFER_SIZE
+            int "coreMQTT-Agent network buffer size"
+            default 10000
+
+        config GRI_MQTT_AGENT_COMMAND_QUEUE_LENGTH
+            int "coreMQTT-Agent command queue length"
+            default 10
+
+        config GRI_MQTT_AGENT_KEEP_ALIVE_INTERVAL_SECONDS
+            int "coreMQTT-Agent keep alive interval in seconds"
+            default 60
+            help
+                The maximum time interval in seconds which is allowed to elapsed between two Control Packets.
+
+        config GRI_MQTT_AGENT_CONNACK_RECV_TIMEOUT_MS
+            int "Timeout for receiving CONNACK in milliseconds"
+            default 1000
+
+        
+    endmenu # coreMQTT-Agent Manager Configurations
+    
+    config GRI_ENABLE_TEMP_SUBPUB_LED_CONTROL
+        bool "Enable temperature sensor pub sub and LED control task"
+        default y
+
+    menu "Temperature pub sub and LED control configurations"
+        depends on GRI_ENABLE_TEMP_SUBPUB_LED_CONTROL
+
+        choice GRI_ENABLE_TEMP_SUBPUB_LED_CONTROL_LED_TYPE
+            prompt "LED type"
+            default GRI_ENABLE_TEMP_SUBPUB_LED_CONTROL_LED_GPIO if IDF_TARGET_ESP32 || IDF_TARGET_ESP32C2
+            default GRI_ENABLE_TEMP_SUBPUB_LED_CONTROL_LED_RMT
+            help
+                Defines the default peripheral for the GRI
+
+            config GRI_ENABLE_TEMP_SUBPUB_LED_CONTROL_LED_GPIO
+                bool "GPIO"
+            config GRI_ENABLE_TEMP_SUBPUB_LED_CONTROL_LED_RMT
+                bool "RMT - Addressable LED"
+        endchoice
+
+        config GRI_ENABLE_TEMP_SUBPUB_LED_CONTROL_LED_GPIO_NUMBER
+            int "GRI GPIO number"
+            default 8 if IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32H2 || IDF_TARGET_ESP32C2
+            default 18 if IDF_TARGET_ESP32S2
+            default 48 if IDF_TARGET_ESP32S3
+            default 5
+            help
+                GPIO number (IOxx) to blink on and off or the RMT signal for the addressable LED.
+                Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used for LED.
+
+        config GRI_ENABLE_TEMP_SUBPUB_LED_CONTROL_STRING_BUFFER_LENGTH
+            int "Topic name and payload buffer length"
+            default 150
+            help
+                Size of statically allocated buffers for holding topic names and payloads.
+
+        config GRI_ENABLE_TEMP_SUBPUB_LED_CONTROL_DELAY_BETWEEN_PUBLISH_OPERATIONS_MS
+            int "Delay between publishes in milliseconds"
+            default 3000
+            help
+                Delay for the synchronous publisher task between publishes.
+
+        config GRI_ENABLE_TEMP_SUBPUB_LED_CONTROL_MAX_COMMAND_SEND_BLOCK_TIME_MS
+            int "coreMQTT-Agent command post block time in milliseconds."
+            default 500
+            help
+                The maximum amount of time in milliseconds to wait for the commands to be posted to the MQTT agent should the MQTT agent's command queue be full. Tasks wait in the Blocked state, so don't use any CPU time.
+        
+        config GRI_ENABLE_TEMP_SUBPUB_LED_CONTROL_QOS_LEVEL
+            int "QoS level of MQTT operations"
+            default 1
+            range 0 2
+            help
+                The QoS level of MQTT messages sent by this demo. This must be 0 or 1 if using AWS as AWS only supports levels 0 or 1. If using another MQTT broker, that supports QoS level 2, this can be set to 2.
+
+        config GRI_ENABLE_TEMP_SUBPUB_LED_CONTROL_TASK_PRIORITY
+            int "Temperature sensor publishing task priority."
+            default 1
+            help
+                The task priority of the temperature sensor publishing task.
+
+        config GRI_ENABLE_TEMP_SUBPUB_LED_CONTROL_TASK_STACK_SIZE
+            int "Temperature sensor publishing task stack size."
+            default 3072
+            help
+                The task stack size of the temperature sensor publishing task.
+
+    endmenu # Temperature pub sub and LED control demo configurations
+
+endmenu # Golden Reference Integration 
+
+
+menu "Example Wifi Provisioning Configuration"
+
+    choice EXAMPLE_PROV_TRANSPORT
+        bool "Provisioning Transport"
+        default EXAMPLE_PROV_TRANSPORT_SOFTAP if IDF_TARGET_ESP32S2
+        default EXAMPLE_PROV_TRANSPORT_BLE
+        help
+            Wi-Fi provisioning component offers both, SoftAP and BLE transports. Choose any one.
+
+        config EXAMPLE_PROV_TRANSPORT_BLE
+            bool "BLE"
+            select BT_ENABLED
+            depends on !IDF_TARGET_ESP32S2
+        config EXAMPLE_PROV_TRANSPORT_SOFTAP
+            bool "Soft AP"
+    endchoice
+
+    config EXAMPLE_PROV_TRANSPORT
+        int
+        default 1 if EXAMPLE_PROV_TRANSPORT_BLE
+        default 2 if EXAMPLE_PROV_TRANSPORT_SOFTAP
+
+    config EXAMPLE_RESET_PROV_MGR_ON_FAILURE
+        bool
+        default y
+        prompt "Reset provisioned credentials and state machine after session failure"
+        help
+            Enable reseting provisioned credentials and state machine after session failure.
+            This will restart the provisioning service after retries are exhausted.
+
+    config EXAMPLE_PROV_MGR_MAX_RETRY_CNT
+        int
+        default 5
+        prompt "Max retries before reseting provisioning state machine"
+        depends on EXAMPLE_RESET_PROV_MGR_ON_FAILURE
+        help
+            Set the Maximum retry to avoid reconnecting to an inexistent AP or if credentials
+            are misconfigured. Provisioned credentials are erased and internal state machine
+            is reset after this threshold is reached.
+
+    config EXAMPLE_PROV_SHOW_QR
+        bool "Show provisioning QR code"
+        default y
+        help
+            Show the QR code for provisioning.
+endmenu

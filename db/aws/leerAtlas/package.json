@@ -1,0 +1,7 @@
+{
+    "name": "leerAtlas",
+    "version": "1.0.0",
+    "dependencies": {
+      "mongodb": "latest"
+    }
+  }
