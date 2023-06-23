@@ -1,5 +1,5 @@
-.devcontainer
-.vscode
+.devcontainer/
+.vscode/
 build/
 main/certs/
 **/.DS_Store
